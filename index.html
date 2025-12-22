@@ -4,17 +4,39 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!-- ÍCONE DO APP (URL Externa) -->
+<!-- ÍCONES -->
 <link rel="icon" href="https://gesseiromaster.site/wp-content/uploads/2025/12/spatula-svgrepo-com.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="https://gesseiromaster.site/wp-content/uploads/2025/12/spatula-svgrepo-com.svg">
 
-<!-- CONFIGURAÇÃO DE APP (PWA) -->
+<!-- MANIFESTO PWA EMBUTIDO -->
+<link rel="manifest" id="my-manifest">
+<script>
+    try {
+        const manifest = {
+            "name": "Calculadora do Gesseiro",
+            "short_name": "GessoCalc",
+            "start_url": window.location.href,
+            "display": "standalone",
+            "background_color": "#F8FAFC",
+            "theme_color": "#0F172A",
+            "orientation": "portrait",
+            "icons": [{ "src": "https://gesseiromaster.site/wp-content/uploads/2025/12/spatula-svgrepo-com.svg", "sizes": "any", "type": "image/svg+xml" }]
+        };
+        const stringManifest = JSON.stringify(manifest);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        const linkTag = document.querySelector('#my-manifest');
+        if(linkTag) linkTag.setAttribute('href', manifestURL);
+    } catch(e) { console.log('Manifest config error ignored'); }
+</script>
+
+<!-- CONFIGURAÇÃO DE APP -->
 <meta name="theme-color" content="#0F172A">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GessoMaster">
+<meta name="apple-mobile-web-app-title" content="Calculadora do Gesseiro">
 
 <!-- Configuração do Tailwind -->
 <script>
@@ -38,6 +60,9 @@
 </script>
 
 <style>
+    /* Reset e Estrutura App-Like */
+    html, body { overscroll-behavior-y: none; }
+
     #gesso-app-wrapper {
         background-color: #F8FAFC;
         color: #0F172A;
@@ -91,11 +116,10 @@
     #gesso-app-wrapper button { box-sizing: border-box; }
     .no-scroll { overflow: hidden; height: 100vh; }
     
-    /* Classe para inverter a cor do ícone para branco se ele for preto originalmente */
     .icon-filter-white { filter: invert(1) brightness(200%); }
 </style>
 
-<div id="gesso-app-wrapper" onload="safeLoadPreferences()">
+<div id="gesso-app-wrapper">
     
     <!-- CONTAINER PRINCIPAL -->
     <div id="appContainer" class="pb-10">
@@ -103,7 +127,6 @@
         <header class="relative w-full bg-brand z-10 border-b border-slate-800 shadow-md">
             <div class="max-w-md mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <!-- ÍCONE SVG ATUALIZADO -->
                     <div class="w-11 h-11 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg border border-blue-500/30 bg-blue-500/10">
                         <img src="https://gesseiromaster.site/wp-content/uploads/2025/12/spatula-svgrepo-com.svg" class="w-6 h-6 icon-filter-white object-contain" alt="GessoMaster Logo">
                     </div>
@@ -283,7 +306,7 @@
                             <input type="number" id="totalExtraCost" placeholder="0,00" class="custom-input !p-4 !pl-12 text-lg font-mono text-yellow-700 border-yellow-200 focus:border-yellow-500">
                             <i class="fa-solid fa-sack-xmark input-icon text-yellow-600"></i>
                         </div>
-                        <p class="text-[10px] text-slate-400 mt-2">Este valor será subtraído da venda para mostrar seu lucro real. (Ex: Ajudante, Transporte, Material Extra)</p>
+                        <p class="text-[10px] text-slate-400 mt-2">Este valor será subtraído da venda para mostrar seu lucro real. (Ex: Ajudante, Transporte)</p>
                     </div>
                 </div>
 
@@ -297,8 +320,8 @@
         </div>
     </div>
 
-    <!-- DASHBOARD RESULTADOS -->
-    <div id="resultsDashboard" class="hidden fixed inset-0 z-[200] bg-[#F8FAFC] overflow-y-auto animate-slide-up w-full h-full">
+    <!-- DASHBOARD RESULTADOS (Z-INDEX 9999 para cobrir menu do WP) -->
+    <div id="resultsDashboard" class="hidden fixed inset-0 z-[9999] bg-[#F8FAFC] overflow-y-auto animate-slide-up w-full h-full">
         <div class="max-w-md mx-auto p-6 min-h-screen flex flex-col">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-2xl font-bold text-brand tracking-tight m-0">Resultado</h2>
@@ -350,29 +373,24 @@
                 </div>
             </div>
 
-            <!-- Botões de Ação (Sessão Escura) -->
+            <!-- Botões de Ação -->
             <div class="bg-brand p-6 rounded-3xl shadow-xl mt-6 relative overflow-hidden">
-                <!-- Elemento decorativo de fundo -->
                 <div class="absolute -right-6 -bottom-6 text-white/5 text-[8rem] pointer-events-none">
                     <i class="fa-solid fa-share-nodes"></i>
                 </div>
-
                 <div class="space-y-3 relative z-10">
                     <button onclick="enviarWhatsApp()" class="w-full bg-[#25D366] hover:bg-[#1ebc57] text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-green-500">
                         <i class="fa-brands fa-whatsapp text-2xl"></i> 
                         Enviar no WhatsApp
                     </button>
-
                     <button onclick="gerarPDF()" class="w-full bg-white/10 hover:bg-white/20 text-white font-bold py-4 rounded-2xl border border-white/10 transition-all active:scale-95 flex items-center justify-center gap-3 backdrop-blur-sm shadow-sm">
                         <i class="fa-solid fa-file-pdf text-red-400 text-xl"></i> 
                         Gerar PDF
                     </button>
-                    
                     <button onclick="window.location.reload()" class="w-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white font-bold py-4 rounded-2xl border border-white/5 transition-all active:scale-95 flex items-center justify-center gap-3 backdrop-blur-sm">
                         <i class="fa-solid fa-rotate-right text-lg"></i>
                         Fazer Novo Orçamento
                     </button>
-
                     <button onclick="fecharResultados()" class="w-full text-slate-500 hover:text-white font-medium py-3 text-sm transition-colors">
                         Voltar e Editar
                     </button>
@@ -381,8 +399,8 @@
         </div>
     </div>
 
-    <!-- CONFIGURAÇÕES (MODAL) -->
-    <div id="configModal" class="hidden absolute inset-0 z-[100] bg-[#F8FAFC] overflow-y-auto w-full h-full">
+    <!-- CONFIGURAÇÕES (MODAL Z-INDEX 9999) -->
+    <div id="configModal" class="hidden fixed inset-0 z-[9999] bg-[#F8FAFC] overflow-y-auto w-full h-full">
         <div class="max-w-md mx-auto p-6 min-h-screen">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-xl font-bold text-brand flex items-center gap-2 m-0">
@@ -429,14 +447,11 @@
                     </div>
                     
                     <p class="text-[11px] text-slate-500 mb-4 bg-slate-100 p-3 rounded-lg border border-slate-200">
-                        <i class="fa-solid fa-circle-info mr-1"></i> Defina quanto você cobra por m² ou unidade em cada serviço. O sistema usará este valor automaticamente.
+                        <i class="fa-solid fa-circle-info mr-1"></i> Defina quanto você cobra por m² ou unidade. O sistema usará este valor automaticamente.
                     </p>
                     <div class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto pr-2" id="servicePriceTable"></div>
                 </div>
             </div>
-
-            <!-- Custos Ocultos (Fundo de cálculo) -->
-            <input type="hidden" id="priceSheet" value="38.00"><input type="hidden" id="priceProfile" value="18.00"><input type="hidden" id="priceScrew" value="15.00"><input type="hidden" id="priceCompound" value="45.00"><input type="hidden" id="priceTape" value="25.00"><input type="hidden" id="pricePlaque" value="3.50"><input type="hidden" id="pricePlasterBag" value="28.00"><input type="hidden" id="priceWire" value="18.00"><input type="hidden" id="priceSisal" value="12.00">
 
             <button type="button" onclick="savePreferences(); fecharConfig();" class="w-full bg-brand hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all mb-10">
                 Salvar Configurações
@@ -444,8 +459,8 @@
         </div>
     </div>
 
-    <!-- HISTÓRICO (MODAL) -->
-    <div id="historyModal" class="hidden absolute inset-0 z-[100] bg-[#F8FAFC] overflow-y-auto w-full h-full">
+    <!-- HISTÓRICO (MODAL Z-INDEX 9999) -->
+    <div id="historyModal" class="hidden fixed inset-0 z-[9999] bg-[#F8FAFC] overflow-y-auto w-full h-full">
         <div class="max-w-md mx-auto p-6 min-h-screen">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-xl font-bold text-brand flex items-center gap-2 m-0">
@@ -459,16 +474,88 @@
             <div class="mt-8 text-center text-slate-400 text-xs pb-10">Armazenado no navegador deste celular.</div>
         </div>
     </div>
+
+    <!-- WRAPPER PDF -->
+    <div id="pdf-wrapper">
+        <div id="pdf-template">
+            <div style="width: 100%; font-family: 'Poppins', sans-serif; color: #0F172A; background: white; padding: 40px; box-sizing: border-box;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; border-bottom: 3px solid #0F172A; padding-bottom: 20px;">
+                    <div>
+                        <div style="font-size: 28px; font-weight: 800; color: #0F172A; letter-spacing: -0.5px;" id="pdfHeaderCompany">
+                            GESSO<span style="color: #2563EB;">MASTER</span>
+                        </div>
+                        <div style="font-size: 14px; color: #64748B; margin-top: 5px;">Soluções Especializadas em Drywall e Gesso</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 32px; font-weight: bold; color: #0F172A;">ORÇAMENTO</div>
+                        <div style="font-size: 14px; color: #64748B;">Data: <span id="pdfDate"></span></div>
+                        <div style="font-size: 14px; color: #64748B;">Ref: #<span id="pdfId"></span></div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 40px; margin-bottom: 40px;">
+                    <div style="flex: 1;">
+                        <h3 style="font-size: 12px; text-transform: uppercase; color: #94A3B8; font-weight: 700; margin-bottom: 10px;">Informações do Cliente</h3>
+                        <div style="background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0;">
+                            <div style="font-weight: bold; font-size: 16px; margin-bottom: 5px;" id="pdfClientName"></div>
+                            <div style="color: #475569; font-size: 14px; margin-bottom: 3px;" id="pdfClientPhone"></div>
+                            <div style="color: #475569; font-size: 14px;" id="pdfClientAddress"></div>
+                        </div>
+                    </div>
+                    <div style="flex: 1;">
+                        <h3 style="font-size: 12px; text-transform: uppercase; color: #94A3B8; font-weight: 700; margin-bottom: 10px;">Resumo do Projeto</h3>
+                        <div style="background: #F1F5F9; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0;">
+                            <div style="color: #334155; font-size: 14px;">Este orçamento inclui fornecimento de material e mão de obra especializada.</div>
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-bottom: 40px;">
+                    <h3 style="font-size: 16px; font-weight: 700; color: #0F172A; margin-bottom: 15px; border-left: 4px solid #0F172A; padding-left: 10px;">Detalhamento dos Serviços</h3>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        <thead>
+                            <tr style="background: #F1F5F9; color: #334155;">
+                                <th style="padding: 12px 15px; text-align: left; border-radius: 6px 0 0 6px;">Descrição do Serviço</th>
+                                <th style="padding: 12px 15px; text-align: center;">Área/Qtd</th>
+                                <th style="padding: 12px 15px; text-align: right; border-radius: 0 6px 6px 0;">Valor Estimado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pdfServicesTableBody"></tbody>
+                        <tfoot>
+                            <tr style="border-top: 2px solid #E2E8F0;">
+                                <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL DO SERVIÇO:</td>
+                                <td style="padding: 15px; text-align: right; font-weight: 800; font-size: 20px; color: #0F172A;" id="pdfTotalPrice"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div style="margin-top: 60px; display: flex; gap: 40px; align-items: flex-end; page-break-inside: avoid;">
+                    <div style="flex: 1; text-align: center;">
+                        <div style="border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
+                        <div style="font-size: 12px; font-weight: bold;">Responsável Técnico</div>
+                        <div style="font-size: 11px; color: #666;" id="pdfFooterCompany">GessoMaster</div>
+                    </div>
+                    <div style="flex: 1; text-align: center;">
+                        <div style="border-bottom: 1px solid #000; margin-bottom: 10px;"></div>
+                        <div style="font-size: 12px; font-weight: bold;">Cliente</div>
+                        <div style="font-size: 11px; color: #666;">Aprovação</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
-<!-- SCRIPTS LÓGICOS -->
+<!-- SCRIPTS LÓGICOS (FORA DA DIV PRINCIPAL PARA SEGURANÇA) -->
 <script>
     let services = [];
     let calculationResult = null;
-    const formatMoney = (value) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const formatMoney = (value) => {
+        if(typeof value !== 'number' || isNaN(value)) return 'R$ 0,00';
+        return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    };
 
     function safeLoadPreferences() {
-        try { loadPreferences(); } catch (e) { console.error("Erro prefs", e); localStorage.removeItem('gessoMasterPrefs'); }
+        try { loadPreferences(); } catch (e) { console.error("Erro prefs", e); }
     }
 
     // --- NAVEGAÇÃO ---
@@ -482,7 +569,10 @@
     // --- PREÇOS ---
     function initPriceTable() {
         const select = document.getElementById('serviceTypeInput');
+        if(!select) return; // Segurança contra erro
         const tableContainer = document.getElementById('servicePriceTable');
+        if(!tableContainer) return;
+        
         tableContainer.innerHTML = '';
         select.querySelectorAll('option').forEach(opt => {
             if(opt.value) {
@@ -499,24 +589,20 @@
     function savePreferences() {
         const servicePrices = {};
         const select = document.getElementById('serviceTypeInput');
-        select.querySelectorAll('option').forEach(opt => {
-            if(opt.value) {
-                const inputId = 'price_svc_' + opt.value.replace(/\s+/g, '_');
-                const el = document.getElementById(inputId);
-                if(el && el.value) servicePrices[opt.value] = el.value;
-            }
-        });
+        if(select) {
+            select.querySelectorAll('option').forEach(opt => {
+                if(opt.value) {
+                    const inputId = 'price_svc_' + opt.value.replace(/\s+/g, '_');
+                    const el = document.getElementById(inputId);
+                    if(el && el.value) servicePrices[opt.value] = el.value;
+                }
+            });
+        }
         const preferences = {
             companyName: document.getElementById('companyName').value,
             profitMargin: document.getElementById('profitMargin').value,
-            servicePrices: servicePrices,
-            // Salvando ocultos
-            sheet: document.getElementById('priceSheet').value,
-            profile: document.getElementById('priceProfile').value,
-            screw: document.getElementById('priceScrew').value,
-            compound: document.getElementById('priceCompound').value
+            servicePrices: servicePrices
         };
-        // Salva custo se estiver na tela
         const mainTotalExtra = document.getElementById('totalExtraCost');
         if(mainTotalExtra) preferences.totalExtraCost = mainTotalExtra.value;
 
@@ -576,7 +662,9 @@
         const item = history.find(i => i.id === id);
         if (item) {
             calculationResult = item.data;
-            const totalCostReal = item.data.salePrice - item.data.netProfit; 
+            // Recalcula o custo com base no que foi salvo (Venda - Lucro = Custo)
+            const totalCostReal = (item.data.salePrice || 0) - (item.data.netProfit || 0);
+            
             document.getElementById('displayClientPrice').innerText = formatMoney(calculationResult.salePrice);
             document.getElementById('displayProfit').innerText = formatMoney(calculationResult.netProfit);
             document.getElementById('detailSale').innerText = formatMoney(calculationResult.salePrice);
@@ -612,7 +700,9 @@
         const text = typeSelect.options[typeSelect.selectedIndex].text;
         const area = parseFloat(areaInput.value);
         const customRate = parseFloat(customRateInput.value);
+        
         if (!area || area <= 0) { alert("Metragem inválida."); return; }
+        
         const hasCustomRate = !isNaN(customRate) && customRate > 0;
         services.push({ id: Date.now(), type, typeText: text, area, isCustom: false, customRate: hasCustomRate ? customRate : null });
         areaInput.value = ''; customRateInput.value = ''; areaInput.focus(); renderServicesList();
@@ -665,36 +755,9 @@
         const prefs = JSON.parse(localStorage.getItem('gessoMasterPrefs') || '{}');
         const servicePrices = prefs.servicePrices || {};
 
-        let drywallArea = 0, plaquinhaArea = 0, totalCalculatedPrice = 0, totalMaterialCost = 0;
+        let totalCalculatedPrice = 0;
         const totalExtraCost = parseFloat(document.getElementById('totalExtraCost').value) || 0;
         const marginPercent = parseFloat(document.getElementById('profitMargin').value) || 0;
-
-        services.forEach(s => {
-            if(!s.isCustom) {
-                const wetKeywords = ['Plaquinha', 'Aramado', 'Beiral', 'Gesso 3D', 'Moldura', 'Gesso', 'Boiserie', 'Rodateto'];
-                const isWet = wetKeywords.some(keyword => s.typeText.includes(keyword) || s.type.includes(keyword));
-                if(isWet) plaquinhaArea += s.area; else drywallArea += s.area;
-            }
-        });
-
-        // PREÇOS FIXOS OCULTOS PARA ESTIMATIVA DE MATERIAL
-        const pricesDrywall = { sheet: 38.00, profile: 18.00, screw: 15.00, tape: 25.00, compound: 45.00 };
-        const pricesPlaque = { plaque: 3.50, plaster: 28.00, wire: 18.00, sisal: 12.00 };
-
-        let costMaterialsDrywall = 0, costMaterialsPlaque = 0;
-
-        // Cálculo estimativo de material para abater do lucro
-        if(drywallArea > 0) {
-            const qtdSheets = Math.ceil((drywallArea / 2.88) * 1.05); const qtdProfiles = Math.ceil((drywallArea * 2) / 3); const qtdScrewsPack = Math.ceil((drywallArea * 35) / 100); const qtdTapeRolls = Math.ceil((drywallArea * 2) / 90); const qtdCompoundBags = Math.ceil((drywallArea * 0.7) / 20);
-            costMaterialsDrywall = (qtdSheets * pricesDrywall.sheet) + (qtdProfiles * pricesDrywall.profile) + (qtdScrewsPack * pricesDrywall.screw) + (qtdTapeRolls * pricesDrywall.tape) + (qtdCompoundBags * pricesDrywall.compound);
-        }
-        if(plaquinhaArea > 0) {
-            const qtdPlaques = Math.ceil((plaquinhaArea / 0.36) * 1.05); const qtdPlasterBags = Math.ceil(plaquinhaArea / 15); const qtdWireKg = Math.ceil(plaquinhaArea * 0.12); const qtdSisalKg = Math.ceil(plaquinhaArea * 0.05);
-            costMaterialsPlaque = (qtdPlaques * pricesPlaque.plaque) + (qtdPlasterBags * pricesPlaque.plaster) + (qtdWireKg * pricesPlaque.wire) + (qtdSisalKg * pricesPlaque.sisal);
-        }
-
-        totalMaterialCost = costMaterialsDrywall + costMaterialsPlaque;
-        const totalArea = drywallArea + plaquinhaArea;
 
         // Cálculo do Preço de Venda
         services.forEach(s => {
@@ -709,34 +772,25 @@
                 itemPrice = s.area * parseFloat(servicePrices[s.type]); 
             } 
             else {
-                // Se não tiver preço fixo, usa método de margem sobre custo material
-                if(totalArea > 0) {
-                    const ratio = s.area / totalArea;
-                    // Nota: Aqui estamos ignorando o Custo Extra no rateio automático, 
-                    // pois o usuário pediu para o custo extra ser manual e fixo apenas para subtração final.
-                    // Então o preço sugerido é Material + Margem.
-                    const itemMaterialCost = totalMaterialCost * ratio;
-                    // Adicionamos uma gordura extra para mão de obra no cálculo automático se não houver preço fixo
-                    const laborEstimate = s.area * 25; // Estimativa R$25/m2 mão de obra base
-                    const costBase = itemMaterialCost + laborEstimate;
-                    itemPrice = costBase + (costBase * (marginPercent / 100));
-                }
+                // Fallback (ex: 30 reais o metro de custo base simbólico)
+                const baseCost = s.area * 30; 
+                itemPrice = baseCost + (baseCost * (marginPercent / 100));
             }
             totalCalculatedPrice += itemPrice;
         });
 
-        // Lucro Líquido = Venda Total - (Materiais + Extras do usuário)
-        const netProfit = totalCalculatedPrice - (totalExtraCost);
+        // Lucro Líquido
+        const netProfit = totalCalculatedPrice - totalExtraCost;
 
         calculationResult = {
             companyName, clientName: document.getElementById('clientName').value || "Cliente", clientPhone: document.getElementById('clientPhone').value, clientAddress: document.getElementById('clientAddress').value,
-            totalArea: drywallArea + plaquinhaArea, salePrice: totalCalculatedPrice, netProfit: netProfit,
+            salePrice: totalCalculatedPrice, netProfit: netProfit,
             servicesDetail: services.map(s => {
                 let val = 0;
                 if(s.isCustom) val = s.fixedPrice;
                 else if(s.customRate) val = s.area * s.customRate;
                 else if(servicePrices[s.type] && parseFloat(servicePrices[s.type]) > 0) val = s.area * parseFloat(servicePrices[s.type]);
-                else if(totalArea > 0) { const ratio = s.area / totalArea; const itemMaterialCost = totalMaterialCost * ratio; const laborEstimate = s.area * 25; const costBase = itemMaterialCost + laborEstimate; val = costBase + (costBase * (marginPercent / 100)); }
+                else { const baseCost = s.area * 30; val = baseCost + (baseCost * (marginPercent / 100)); }
                 return { ...s, estimatedValue: val };
             })
         };
@@ -747,7 +801,6 @@
         const elDetailCost = document.getElementById('detailCost'); if(elDetailCost) elDetailCost.innerText = formatMoney(totalExtraCost);
         const elProfitFinal = document.getElementById('detailProfitFinal'); if(elProfitFinal) elProfitFinal.innerText = formatMoney(netProfit);
         
-        // Auto Save e Navegação
         salvarOrcamentoAtual();
         mostrarResultados();
     }
@@ -789,4 +842,7 @@
         const opt = { margin: 0, filename: `Orcamento_${calculationResult.clientName.replace(/\s+/g, '_')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
         html2pdf().set(opt).from(element).save().then(() => { wrapper.style.zIndex = "-100"; wrapper.style.height = "0"; wrapper.style.overflow = "hidden"; });
     }
+    
+    // Iniciar
+    safeLoadPreferences();
 </script>
