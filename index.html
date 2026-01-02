@@ -402,7 +402,8 @@
                         Fazer Novo Orçamento
                     </button>
 
-                    <button onclick="fecharResultados()" class="w-full text-slate-500 hover:text-white font-medium py-3 text-sm transition-colors">
+                    <button onclick="fecharResultados()" class="w-full bg-detail hover:bg-blue-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-blue-900/20 transition-all active:scale-95 flex items-center justify-center gap-3 text-lg border border-blue-500/50">
+                        <i class="fa-solid fa-pen-to-square"></i>
                         Voltar e Editar
                     </button>
                 </div>
@@ -677,19 +678,36 @@
         carregarListaHistorico();
     }
 
+    // CORREÇÃO AQUI: Restaurar o formulário completo ao carregar do histórico
     function carregarHistorico(id) {
         const history = JSON.parse(localStorage.getItem('gessoMasterHistory') || '[]');
         const item = history.find(i => i.id === id);
         if (item) {
+            // 1. Atualizar Estado Global
             calculationResult = item.data;
-            const totalCostReal = (item.data.salePrice || 0) - (item.data.netProfit || 0);
+            services = item.data.servicesDetail || []; // Restaura a lista de serviços para memória
+
+            // 2. Preencher Inputs do Formulário (Para edição futura)
+            document.getElementById('clientName').value = item.data.clientName || '';
+            document.getElementById('clientPhone').value = item.data.clientPhone || '';
+            document.getElementById('clientAddress').value = item.data.clientAddress || '';
             
+            // Recalcula o custo extra para preencher o input (Venda - Lucro = Custo Total)
+            const totalCostReal = (item.data.salePrice || 0) - (item.data.netProfit || 0);
+            const extraCostInput = document.getElementById('totalExtraCost');
+            if(extraCostInput) extraCostInput.value = totalCostReal > 0 ? totalCostReal : '';
+
+            // 3. Atualizar Lista Visual de Serviços
+            renderServicesList();
+
+            // 4. Exibir Resultados
             document.getElementById('displayClientPrice').innerText = formatMoney(calculationResult.salePrice);
             document.getElementById('displayProfit').innerText = formatMoney(calculationResult.netProfit);
             document.getElementById('detailSale').innerText = formatMoney(calculationResult.salePrice);
             document.getElementById('detailCost').innerText = formatMoney(totalCostReal);
             document.getElementById('detailProfitFinal').innerText = formatMoney(calculationResult.netProfit);
             
+            // 5. Trocar Tela
             document.getElementById('historyModal').classList.add('hidden');
             mostrarResultados();
         }
@@ -737,6 +755,35 @@
         document.getElementById('customNameInput').focus(); renderServicesList();
     }
 
+    // NOVA FUNÇÃO: EDITAR SERVIÇO
+    function editarServico(id) {
+        const item = services.find(s => s.id === id);
+        if (!item) return;
+
+        if (item.isCustom) {
+            toggleServiceTab('custom');
+            document.getElementById('customNameInput').value = item.typeText;
+            document.getElementById('customPriceInput').value = item.fixedPrice;
+            document.getElementById('customNameInput').focus();
+        } else {
+            toggleServiceTab('catalogo');
+            const select = document.getElementById('serviceTypeInput');
+            let optionExists = false;
+            for (let i = 0; i < select.options.length; i++) {
+                if (select.options[i].value === item.type) {
+                    select.selectedIndex = i;
+                    optionExists = true;
+                    break;
+                }
+            }
+            document.getElementById('areaInput').value = item.area;
+            document.getElementById('customRateInput').value = item.customRate || '';
+            document.getElementById('areaInput').focus();
+        }
+
+        removerServico(id);
+    }
+
     function removerServico(id) { services = services.filter(s => s.id !== id); renderServicesList(); }
 
     function renderServicesList() {
@@ -762,7 +809,8 @@
                 else if (storedPrice > 0) { displayValue = `${item.area} m² x ${formatMoney(storedPrice)} (Tab)`; borderClass = 'border-slate-300'; iconClass = 'fa-table text-slate-700 bg-slate-100'; }
                 else { displayValue = `${item.area} m² (Calc)`; iconClass = 'fa-calculator text-slate-500 bg-slate-100'; borderClass = 'border-slate-200'; }
             }
-            list.innerHTML += `<div class="bg-white p-4 rounded-xl border ${borderClass} flex justify-between items-center group transition-all shadow-sm"><div class="flex items-center gap-4"><div class="${iconClass} w-10 h-10 rounded-full flex items-center justify-center text-sm"><i class="fa-solid ${item.isCustom ? 'fa-pen' : (item.customRate ? 'fa-tag' : (storedPrice > 0 ? 'fa-table' : 'fa-calculator'))}"></i></div><div><div class="text-slate-800 font-bold text-sm">${item.typeText}</div><div class="text-slate-400 text-xs mt-0.5"><span class="font-mono text-slate-500 font-bold">${displayValue}</span></div></div></div><button onclick="removerServico(${item.id})" class="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg transition-all"><i class="fa-solid fa-trash-can"></i></button></div>`;
+            // Botão de Editar Adicionado
+            list.innerHTML += `<div class="bg-white p-4 rounded-xl border ${borderClass} flex justify-between items-center group transition-all shadow-sm"><div class="flex items-center gap-4"><div class="${iconClass} w-10 h-10 rounded-full flex items-center justify-center text-sm"><i class="fa-solid ${item.isCustom ? 'fa-pen' : (item.customRate ? 'fa-tag' : (storedPrice > 0 ? 'fa-table' : 'fa-calculator'))}"></i></div><div><div class="text-slate-800 font-bold text-sm">${item.typeText}</div><div class="text-slate-400 text-xs mt-0.5"><span class="font-mono text-slate-500 font-bold">${displayValue}</span></div></div></div><div class="flex gap-2"><button onclick="editarServico(${item.id})" class="text-slate-400 hover:text-blue-600 bg-slate-50 hover:bg-blue-50 p-2 rounded-lg transition-all" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="removerServico(${item.id})" class="text-slate-400 hover:text-red-500 bg-slate-50 hover:bg-red-50 p-2 rounded-lg transition-all" title="Remover"><i class="fa-solid fa-trash-can"></i></button></div></div>`;
         });
         totalDisplay.innerText = `Área: ${totalArea.toFixed(2)} m² | Extras: ${formatMoney(totalCustom)}`;
     }
@@ -825,8 +873,8 @@
             totalCalculatedPrice += itemPrice;
         });
 
-        // Lucro Líquido
-        const netProfit = totalCalculatedPrice - totalExtraCost;
+        // Lucro Líquido = Venda Total - (Materiais + Extras do usuário)
+        const netProfit = totalCalculatedPrice - (totalExtraCost);
 
         calculationResult = {
             companyName, clientName: document.getElementById('clientName').value || "Cliente", clientPhone: document.getElementById('clientPhone').value, clientAddress: document.getElementById('clientAddress').value,
@@ -847,6 +895,7 @@
         const elDetailCost = document.getElementById('detailCost'); if(elDetailCost) elDetailCost.innerText = formatMoney(totalExtraCost);
         const elProfitFinal = document.getElementById('detailProfitFinal'); if(elProfitFinal) elProfitFinal.innerText = formatMoney(netProfit);
         
+        // Auto Save e Navegação
         salvarOrcamentoAtual();
         mostrarResultados();
     }
