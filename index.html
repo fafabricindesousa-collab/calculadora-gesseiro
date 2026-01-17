@@ -942,8 +942,7 @@
         });
     }
 
-    // LÓGICA DE ESTIMATIVA DE MATERIAIS - ATUALIZADA
-    // AGORA RECEBE O PARÂMETRO 'sheetSize' (opcional)
+    // LÓGICA DE ESTIMATIVA DE MATERIAIS
     const MATERIAL_RECIPES = {
         'Forro Plaquinha Dilatado': (area) => [
             { name: 'Placa 60x60', qtd: (area / 0.36) * 1.05, unit: 'un' },
@@ -1014,7 +1013,7 @@
     };
 
     // VERSÃO DO APP
-    const APP_VERSION = '2.4.1';
+    const APP_VERSION = '2.5';
 
     let services = [];
     let calculationResult = null;
@@ -1561,6 +1560,176 @@
         
         salvarOrcamentoAtual();
         mostrarResultados();
+    }
+    
+    // --- NOVA FUNÇÃO DE DESCONTO ---
+    function aplicarDesconto() {
+        if(!calculationResult) return;
+        
+        const discountVal = parseFloat(document.getElementById('discountInput').value) || 0;
+        
+        calculationResult.discount = discountVal;
+        calculationResult.salePrice = calculationResult.grossPrice - discountVal;
+        
+        // Recalcular Lucro (Lucro = Venda Final - Gastos)
+        calculationResult.netProfit = calculationResult.salePrice - calculationResult.totalExpenses;
+        
+        // Atualizar UI
+        document.getElementById('displayClientPrice').innerText = formatMoney(calculationResult.salePrice);
+        document.getElementById('displayProfit').innerText = formatMoney(calculationResult.netProfit);
+        document.getElementById('detailProfitFinal').innerText = formatMoney(calculationResult.netProfit);
+        
+        // Atualizar Lista Detalhada
+        const discountLine = document.getElementById('detailDiscount');
+        const discountValueEl = document.getElementById('detailDiscountValue');
+        
+        if(discountVal > 0) {
+            discountLine.classList.remove('hidden');
+            discountValueEl.innerText = '- ' + formatMoney(discountVal);
+        } else {
+            discountLine.classList.add('hidden');
+        }
+    }
+
+    function enviarWhatsApp() {
+        if (!calculationResult) return;
+        let phone = calculationResult.clientPhone.replace(/\D/g, ''); 
+        const name = calculationResult.clientName;
+        const company = calculationResult.companyName; 
+        const total = formatMoney(calculationResult.salePrice);
+        
+        const servicesList = calculationResult.servicesDetail.map(s => { 
+            let details = s.isCustom ? '(Extra)' : `(${s.area} ${s.unit || 'm²'})`; 
+            return `• ${s.typeText} ${details}`; 
+        }).join('\n');
+        
+        let discountMsg = "";
+        if(calculationResult.discount > 0) {
+            discountMsg = `\n(Desconto aplicado: -${formatMoney(calculationResult.discount)})`;
+        }
+        
+        // Retrieve observation
+        const obsElement = document.getElementById('projectSummaryInput');
+        const obs = obsElement ? obsElement.value.trim() : "";
+        let obsMsg = "";
+        if(obs) {
+            obsMsg = `\n\n📝 *Observações:*\n${obs}`;
+        }
+        
+        const message = `Olá, *${name}*! Tudo bem? 👋\n\nAqui é da *${company}*.\nConforme conversamos, segue o resumo do seu orçamento:\n\n${servicesList}\n\n💰 *Valor Total: ${total}*${discountMsg}${obsMsg}\n\nPodemos agendar o início da obra?\nFico à disposição para tirar qualquer dúvida!`;
+        
+        if (phone) { 
+            if (phone.length >= 10 && phone.length <= 11 && !phone.startsWith('55')) phone = '55' + phone; 
+            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank'); 
+        }
+        else { showToast("Número de telefone incompleto.", true); window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank'); }
+    }
+
+    function gerarPDF() {
+        if (!calculationResult) return;
+        const d = new Date();
+        document.getElementById('pdfDate').innerText = d.toLocaleDateString('pt-BR');
+        document.getElementById('pdfId').innerText = Math.floor(Math.random() * 9000) + 1000;
+        const companyName = calculationResult.companyName;
+        
+        // READ CURRENT PREFS FOR LOGO (to ensure latest logo is used)
+        const prefs = JSON.parse(localStorage.getItem('gessoMasterPrefs') || '{}');
+        const logoBase64 = prefs.companyLogo;
+
+        // Header Logic with Logo Support
+        const headerEl = document.getElementById('pdfHeaderCompany');
+        
+        let companyNameHtml = 'GESSO<span style="color: #2563EB;">MASTER</span>';
+        if(companyName && companyName !== "GessoMaster") { 
+            companyNameHtml = `<span style="text-transform: uppercase;">${companyName}</span>`; 
+        }
+
+        if (logoBase64) {
+            // Display Logo AND Name side by side
+            headerEl.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <img src="${logoBase64}" style="max-height: 70px; max-width: 250px; object-fit: contain;">
+                    <span>${companyNameHtml}</span>
+                </div>`;
+        } else {
+            // Display only Name
+            headerEl.innerHTML = companyNameHtml;
+        }
+        
+        // Footer name always text
+        document.getElementById('pdfFooterCompany').innerText = companyName && companyName !== "GessoMaster" ? companyName : 'GessoMaster';
+
+        document.getElementById('pdfClientName').innerText = calculationResult.clientName;
+        document.getElementById('pdfClientPhone').innerText = calculationResult.clientPhone || "Não informado";
+        document.getElementById('pdfClientAddress').innerText = calculationResult.clientAddress || "Não informado";
+        const tbody = document.getElementById('pdfServicesTableBody'); tbody.innerHTML = '';
+        
+        // Get custom summary or default
+        const summaryElement = document.getElementById('projectSummaryInput');
+        const customSummary = summaryElement ? summaryElement.value.trim() : "";
+        const defaultSummary = "Este orçamento inclui fornecimento de material e mão de obra especializada.";
+        document.getElementById('pdfProjectSummary').innerText = customSummary || defaultSummary;
+
+        calculationResult.servicesDetail.forEach((s) => {
+            // Ajuste no PDF para mostrar unidade
+            const areaDisplay = s.isCustom ? '-' : `${s.area} ${s.unit || 'm²'}`;
+            tbody.innerHTML += `<tr style="border-bottom: 1px solid #e5e7eb; page-break-inside: avoid;"><td style="padding: 12px 15px; color: #374151;">${s.typeText || s.type}</td><td style="padding: 12px 15px; text-align: center; color: #6b7280;">${areaDisplay}</td><td style="padding: 12px 15px; text-align: right; color: #111827; font-weight: 500;">${formatMoney(s.estimatedValue)}</td></tr>`;
+        });
+        
+        // FOOTER DINAMICO PARA DESCONTO
+        const tfoot = document.getElementById('pdfServicesTableFoot');
+        if(calculationResult.discount > 0) {
+            tfoot.innerHTML = `
+                <tr style="border-top: 2px solid #E2E8F0;">
+                    <td colspan="2" style="padding: 10px 15px; text-align: right; color: #64748B;">Subtotal:</td>
+                    <td style="padding: 10px 15px; text-align: right; color: #64748B;">${formatMoney(calculationResult.grossPrice)}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding: 5px 15px; text-align: right; color: #F97316;">Desconto:</td>
+                    <td style="padding: 5px 15px; text-align: right; color: #F97316;">- ${formatMoney(calculationResult.discount)}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL:</td>
+                    <td style="padding: 15px; text-align: right; font-weight: 800; font-size: 20px; color: #0F172A;">${formatMoney(calculationResult.salePrice)}</td>
+                </tr>
+            `;
+        } else {
+             tfoot.innerHTML = `
+                <tr style="border-top: 2px solid #E2E8F0;">
+                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL DO SERVIÇO:</td>
+                    <td style="padding: 15px; text-align: right; font-weight: 800; font-size: 20px; color: #0F172A;">${formatMoney(calculationResult.salePrice)}</td>
+                </tr>
+             `;
+        }
+        
+        const element = document.getElementById('pdf-template'); 
+        const wrapper = document.getElementById('pdf-wrapper');
+        
+        // FIX: Prepare wrapper for capture by making it visible and on-screen
+        wrapper.style.visibility = "visible"; 
+        wrapper.style.left = "0"; 
+        wrapper.style.top = "0";
+        wrapper.style.zIndex = "9999"; 
+        
+        const opt = { margin: 0, filename: `Orcamento_${calculationResult.clientName.replace(/\s+/g, '_')}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true, scrollY: 0 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } };
+        
+        html2pdf().set(opt).from(element).save()
+        .then(() => { 
+            // Reset wrapper state
+            wrapper.style.zIndex = "-100"; 
+            wrapper.style.visibility = "hidden"; 
+            wrapper.style.left = "-9999px"; 
+            wrapper.style.height = "0"; 
+            wrapper.style.overflow = "hidden"; 
+        })
+        .catch(err => {
+            console.error(err);
+            showToast("Erro ao gerar PDF.", true);
+            // Ensure cleanup on error
+            wrapper.style.zIndex = "-100"; 
+            wrapper.style.visibility = "hidden"; 
+            wrapper.style.left = "-9999px";
+        });
     }
     
     // Iniciar
