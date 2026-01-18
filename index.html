@@ -215,7 +215,6 @@
         <header class="relative w-full bg-brand z-10 border-b border-slate-800 shadow-md">
             <div class="max-w-md mx-auto px-6 py-4 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <!-- ÍCONE SVG ATUALIZADO -->
                     <div class="w-11 h-11 rounded-2xl flex items-center justify-center overflow-hidden shadow-lg border border-blue-500/30 bg-blue-500/10">
                         <img src="https://gesseiromaster.site/wp-content/uploads/2025/12/spatula-svgrepo-com.svg" class="w-6 h-6 icon-filter-white object-contain" alt="GessoMaster Logo">
                     </div>
@@ -256,7 +255,6 @@
 
                 <!-- 2. Serviços -->
                 <div class="clean-card p-6 animate-slide-up" style="animation-delay: 0.1s;">
-                    <!-- ... existing service card content ... -->
                     <div class="flex items-center gap-3 mb-6 pb-3 border-b border-slate-50">
                         <div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
                             <i class="fa-solid fa-screwdriver-wrench text-xl"></i>
@@ -265,7 +263,6 @@
                     </div>
                     
                     <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 mb-5">
-                        <!-- NOVO DESIGN DOS BOTÕES DE SELEÇÃO -->
                         <div class="flex bg-slate-200/60 p-1.5 rounded-2xl gap-1 mb-5">
                             <button type="button" onclick="toggleServiceTab('catalogo')" id="tabCatalogo" class="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all shadow-sm bg-white text-brand border border-slate-200">
                                 <i class="fa-solid fa-book-open mr-1"></i> Catálogo
@@ -290,18 +287,17 @@
                                                 <option value="Fechamento de Beiral">Fechamento de Beiral</option>
                                                 <option value="Revestimento de Parede">Revestimento de Parede</option>
                                                 <option value="Revestimento 3D">Revestimento 3D</option>
+                                                <option value="Parede de Bloco de Gesso">Parede de Bloco de Gesso (Standard/Hidro)</option>
                                                 <option value="Moldura de Gesso">Moldura de Gesso (Metro)</option>
                                                 <option value="Sanca Aberta Gesso">Sanca Aberta (Gesso)</option>
                                                 <option value="Sanca Fechada Gesso">Sanca Fechada (Gesso)</option>
                                                 <option value="Cortineiro Gesso">Cortineiro (Gesso)</option>
                                             </optgroup>
                                             
-                                            <!-- DRYWALL SIMPLIFICADO -->
                                             <optgroup label="Sistemas Drywall">
                                                 <option value="Forro Drywall">Forro Drywall Liso (F530)</option>
                                                 <option value="Forro Drywall Tabicado">Forro Drywall Tabicado</option>
                                                 <option value="Forro Drywall Acústico">Forro Drywall Acústico</option>
-                                                <option value="Forro Drywall Aramado">Forro Drywall Estruturado</option>
                                                 <option value="Parede Drywall">Parede Drywall Simples</option>
                                                 <option value="Parede Drywall Acústica">Parede Drywall Acústica</option>
                                                 <option value="Parede Drywall RU">Parede Drywall RU (Umidade)</option>
@@ -311,7 +307,6 @@
                                                 <option value="Closet Drywall">Closet / Prateleiras</option>
                                             </optgroup>
 
-                                            <!-- GRUPO PVC -->
                                             <optgroup label="Sistemas Forro PVC">
                                                 <option value="Forro PVC Branco Liso 8mm">Forro PVC Branco Liso 8mm</option>
                                                 <option value="Forro PVC Branco Frisado 8mm">Forro PVC Branco Frisado 8mm</option>
@@ -326,8 +321,6 @@
                                                 <option value="Forro PVC Preto Frisado">Forro PVC Preto Frisado</option>
                                                 <option value="Forro PVC Cinza/Prata">Forro PVC Cinza/Prata</option>
                                                 <option value="Forro PVC Texturizado">Forro PVC Texturizado</option>
-                                                <option value="Forro PVC Térmico (c/ Isopor)">Forro PVC Térmico (c/ Isopor)</option>
-                                                <option value="Forro PVC Térmico (c/ Manta)">Forro PVC Térmico (c/ Manta)</option>
                                                 <option value="Revestimento Parede PVC">Revestimento Parede PVC</option>
                                                 <option value="Sanca de PVC">Sanca de PVC (Metro)</option>
                                             </optgroup>
@@ -343,7 +336,6 @@
                                                 <option value="Boiserie">Boiserie</option>
                                                 <option value="Rodateto Decorado">Rodateto Decorado</option>
                                             </optgroup>
-                                            <!-- Grupo para serviços customizados -->
                                             <optgroup id="customServicesOptGroup" label="Meus Serviços Salvos"></optgroup>
                                         </select>
                                         <i class="fa-solid fa-chevron-down input-icon !text-xs !left-auto !right-4 !text-slate-400"></i>
@@ -351,24 +343,57 @@
                                     </div>
                                 </div>
                                 
-                                <!-- SELETOR DE TAMANHO DA CHAPA (NOVO) -->
-                                <div id="sheetSizeSelector" class="hidden animate-slide-up bg-blue-50 border border-blue-200 rounded-xl p-3 mb-4">
-                                    <label class="text-[11px] font-bold text-blue-700 uppercase mb-2 block">Tamanho da Chapa Drywall</label>
-                                    <div class="flex gap-2">
-                                        <label class="flex items-center gap-2 bg-white border border-blue-100 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-blue-50 transition-colors">
-                                            <input type="radio" name="sheetSize" value="240" checked class="accent-blue-600 w-4 h-4">
-                                            <div class="leading-none">
-                                                <span class="block text-xs font-bold text-slate-700">1.20 x 2.40</span>
-                                                <span class="block text-[9px] text-slate-400 mt-0.5">Padrão (2.88m²)</span>
-                                            </div>
-                                        </label>
-                                        <label class="flex items-center gap-2 bg-white border border-blue-100 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-blue-50 transition-colors">
-                                            <input type="radio" name="sheetSize" value="180" class="accent-blue-600 w-4 h-4">
-                                            <div class="leading-none">
-                                                <span class="block text-xs font-bold text-slate-700">1.20 x 1.80</span>
-                                                <span class="block text-[9px] text-slate-400 mt-0.5">Menor (2.16m²)</span>
-                                            </div>
-                                        </label>
+                                <!-- OPÇÕES DO DRYWALL (CHAPA + ISOLAMENTO + REGULADOR) -->
+                                <div id="drywallOptionsContainer" class="hidden space-y-3">
+                                    
+                                    <!-- Seletor de Chapa -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-3 animate-slide-up">
+                                        <label class="text-[11px] font-bold text-blue-700 uppercase mb-2 block"><i class="fa-solid fa-ruler-vertical mr-1"></i> Tamanho da Chapa</label>
+                                        <div class="flex gap-2">
+                                            <label class="flex items-center gap-2 bg-white border border-blue-100 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-blue-50 transition-colors">
+                                                <input type="radio" name="sheetSize" value="240" checked class="accent-blue-600 w-4 h-4">
+                                                <div class="leading-none">
+                                                    <span class="block text-xs font-bold text-slate-700">1.20 x 2.40</span>
+                                                    <span class="block text-[9px] text-slate-400 mt-0.5">Padrão</span>
+                                                </div>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-white border border-blue-100 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-blue-50 transition-colors">
+                                                <input type="radio" name="sheetSize" value="180" class="accent-blue-600 w-4 h-4">
+                                                <div class="leading-none">
+                                                    <span class="block text-xs font-bold text-slate-700">1.20 x 1.80</span>
+                                                    <span class="block text-[9px] text-slate-400 mt-0.5">Menor</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- Seletor de Isolamento (Lã) -->
+                                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 animate-slide-up">
+                                        <label class="text-[11px] font-bold text-amber-700 uppercase mb-2 block"><i class="fa-solid fa-layer-group mr-1"></i> Isolamento (Lã)</label>
+                                        <select id="insulationInput" class="w-full p-2.5 rounded-lg border border-amber-200 text-sm bg-white text-slate-700 focus:outline-none focus:border-amber-400">
+                                            <option value="none">Sem Isolamento</option>
+                                            <option value="Lã de Vidro">Lã de Vidro</option>
+                                            <option value="Lã de Rocha">Lã de Rocha</option>
+                                            <option value="Lã de PET">Lã de PET</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Seletor de Regulador (Normal/Anão) -->
+                                    <div class="bg-slate-200 border border-slate-300 rounded-xl p-3 animate-slide-up">
+                                        <label class="text-[11px] font-bold text-slate-600 uppercase mb-2 block"><i class="fa-solid fa-arrows-up-down mr-1"></i> Tipo de Regulador</label>
+                                        <div class="flex gap-2">
+                                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-slate-50 transition-colors">
+                                                <input type="radio" name="regulatorType" value="normal" checked class="accent-slate-600 w-4 h-4">
+                                                <span class="text-xs font-bold text-slate-700">Normal</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg p-2.5 flex-1 cursor-pointer hover:bg-slate-50 transition-colors">
+                                                <input type="radio" name="regulatorType" value="anao" class="accent-slate-600 w-4 h-4">
+                                                <div class="leading-none">
+                                                    <span class="block text-xs font-bold text-slate-700">Anão</span>
+                                                    <span class="block text-[9px] text-slate-400 mt-0.5">(Curto)</span>
+                                                </div>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                                 
@@ -558,6 +583,22 @@
                         Observações / Resumo
                     </label>
                     <textarea id="projectSummaryInput" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm text-slate-600 focus:outline-none focus:border-slate-400 transition-all resize-none" rows="2" placeholder="Este orçamento inclui fornecimento de material e mão de obra especializada."></textarea>
+                </div>
+
+                <!-- CARD TOGGLE MEDIDAS PDF (NOVO) -->
+                <div class="clean-card p-4 mt-2 border-l-4 border-indigo-400 animate-slide-up" style="animation-delay: 0.2s;">
+                    <div class="flex justify-between items-center">
+                        <label class="font-bold text-slate-600 text-sm flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-ruler-horizontal"></i>
+                            </div>
+                            Mostrar Medidas no PDF
+                        </label>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="pdfShowMeasurements" class="sr-only peer" checked>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                    </div>
                 </div>
             </div>
 
@@ -944,6 +985,12 @@
 
     // LÓGICA DE ESTIMATIVA DE MATERIAIS
     const MATERIAL_RECIPES = {
+        'Parede de Bloco de Gesso': (area) => [
+            { name: 'Bloco de Gesso (50x66)', qtd: area * 3.1, unit: 'un' }, // Média 3 blocos/m² + quebra
+            { name: 'Gesso Cola', qtd: area * 1.5, unit: 'kg' }, // ~1.5kg por m²
+            { name: 'Gesso em Pó (Acabamento)', qtd: area * 0.5, unit: 'kg' },
+            { name: 'Sisal/Junco', qtd: area * 0.05, unit: 'kg' }
+        ],
         'Forro Plaquinha Dilatado': (area) => [
             { name: 'Placa 60x60', qtd: (area / 0.36) * 1.05, unit: 'un' },
             { name: 'Gesso em Pó (Saco 40kg)', qtd: area / 15, unit: 'sc' },
@@ -951,12 +998,14 @@
             { name: 'Arame Galvanizado', qtd: area * 0.12, unit: 'kg' },
             { name: 'Junta de Dilatação (Tabica)', qtd: Math.sqrt(area) * 4, unit: 'm' }
         ],
-        'Forro Drywall': (area, sheetSize) => {
-            // Define area da chapa: 240 -> 2.88m², 180 -> 2.16m²
+        'Forro Drywall': (area, options) => {
+            // Options: { sheetSize: '240'|'180', insulation: 'none'|'Vidro'..., regulator: 'normal'|'anao' }
+            const sheetSize = options.sheetSize || '240';
             const sheetArea = (sheetSize === '180') ? 2.16 : 2.88;
             const sheetName = (sheetSize === '180') ? 'Chapa ST 1.20x1.80' : 'Chapa ST 1.20x2.40';
+            const regType = (options.regulator === 'anao') ? 'Regulador Anão' : 'Regulador F530';
             
-            return [
+            const list = [
                 { name: sheetName, qtd: (area / sheetArea) * 1.05, unit: 'un' }, 
                 { name: 'Perfil F530', qtd: area * 2.5, unit: 'm' }, 
                 { name: 'Canaleta/Tabica (Perímetro Est.)', qtd: Math.sqrt(area) * 4, unit: 'm' }, 
@@ -964,8 +1013,18 @@
                 { name: 'Parafuso Metal x Metal', qtd: area * 4, unit: 'un' },
                 { name: 'Fita de Papel', qtd: area * 2, unit: 'm' },
                 { name: 'Massa de Junta', qtd: area * 0.6, unit: 'kg' },
-                { name: 'Arame/Tirante', qtd: area * 1.5, unit: 'un' }
+                { name: 'Arame/Tirante', qtd: area * 1.5, unit: 'm' }, // Metros de arame, ajustado
+                { name: regType, qtd: area * 1.5, unit: 'un' }, // 1.5 reguladores por m2 (média)
+                { name: 'Bucha Anel 6', qtd: (Math.sqrt(area) * 4) + (area * 1.5), unit: 'un' }, // Perimetro + Tirantes
+                { name: 'Parafuso Flg 4,5x45', qtd: (Math.sqrt(area) * 4) + (area * 1.5), unit: 'un' } // Perimetro + Tirantes
             ];
+
+            // Adicionar Isolamento se selecionado
+            if(options.insulation && options.insulation !== 'none') {
+                list.push({ name: options.insulation, qtd: area * 1.05, unit: 'm²' });
+            }
+
+            return list;
         },
         'Forro Plaquinha': (area) => [
             { name: 'Placa 60x60', qtd: (area / 0.36) * 1.05, unit: 'un' },
@@ -974,25 +1033,35 @@
             { name: 'Arame Galvanizado', qtd: area * 0.12, unit: 'kg' },
             { name: 'Junta de Dilatação (Estimativa)', qtd: Math.sqrt(area) * 4, unit: 'm' }
         ],
-        'Parede Drywall': (area, sheetSize) => {
+        'Parede Drywall': (area, options) => {
+             // Options might contain sheetSize
+             const sheetSize = options.sheetSize || '240';
              const sheetArea = (sheetSize === '180') ? 2.16 : 2.88;
              const sheetName = (sheetSize === '180') ? 'Chapa ST 1.20x1.80' : 'Chapa ST 1.20x2.40';
 
-             return [
+             const list = [
                  { name: sheetName, qtd: ((area * 2) / sheetArea) * 1.05, unit: 'un' }, // 2 lados
                  { name: 'Montante 48/70/90', qtd: area * 2.2, unit: 'm' },
                  { name: 'Guia 48/70/90', qtd: Math.sqrt(area) * 2, unit: 'm' },
                  { name: 'Parafuso GN25', qtd: area * 30, unit: 'un' },
                  { name: 'Fita de Papel', qtd: area * 3, unit: 'm' }, 
                  { name: 'Massa de Junta', qtd: area * 0.9, unit: 'kg' },
-                 { name: 'Banda Acústica (Opcional)', qtd: Math.sqrt(area) * 2, unit: 'm' }
+                 { name: 'Banda Acústica (Opcional)', qtd: Math.sqrt(area) * 2, unit: 'm' },
+                 { name: 'Bucha 8 + Parafuso', qtd: Math.sqrt(area) * 4, unit: 'un' } // Fixação Guia
             ];
+            
+            // Adicionar Isolamento Parede (assumindo que "insulation" vem nas options se for selecionado no futuro)
+            if(options.insulation && options.insulation !== 'none') {
+                 list.push({ name: options.insulation, qtd: area * 1.05, unit: 'm²' });
+            }
+            return list;
         },
         'Revestimento de Parede': (area) => [
              { name: 'Placa 60x60', qtd: (area / 0.36) * 1.05, unit: 'un' },
              { name: 'Gesso Cola', qtd: area * 1.5, unit: 'kg' }, 
         ],
-        'Revestimento Drywall': (area, sheetSize) => {
+        'Revestimento Drywall': (area, options) => {
+             const sheetSize = options.sheetSize || '240';
              const sheetArea = (sheetSize === '180') ? 2.16 : 2.88;
              const sheetName = (sheetSize === '180') ? 'Chapa ST 1.20x1.80' : 'Chapa ST 1.20x2.40';
 
@@ -1013,7 +1082,7 @@
     };
 
     // VERSÃO DO APP
-    const APP_VERSION = '2.5';
+    const APP_VERSION = '3.0 Final';
 
     let services = [];
     let calculationResult = null;
@@ -1033,14 +1102,25 @@
         if(serviceSelect) {
             serviceSelect.addEventListener('change', function() {
                 const val = this.value;
-                const sheetSelector = document.getElementById('sheetSizeSelector');
+                const drywallContainer = document.getElementById('drywallOptionsContainer');
+                
                 // Show if "Drywall" is in the name
                 if(val.includes('Drywall')) {
-                    sheetSelector.classList.remove('hidden');
+                    drywallContainer.classList.remove('hidden');
                 } else {
-                    sheetSelector.classList.add('hidden');
+                    drywallContainer.classList.add('hidden');
                 }
+                
+                // Update Unit based on selection
+                const unitSelect = document.getElementById('unitInput');
+                const selectedOption = this.options[this.selectedIndex];
+                const unit = selectedOption.dataset.unit || defaultUnits[val] || 'm²';
+                if(unitSelect) unitSelect.value = unit;
             });
+            
+            // CORREÇÃO: Forçar disparo do evento no carregamento para ajustar UI inicial
+            const event = new Event('change');
+            serviceSelect.dispatchEvent(event);
         }
     }
 
@@ -1174,18 +1254,6 @@
         'Nicho Embutido': 'un',
         'Sanca de PVC': 'm',
     };
-
-    const serviceSelect = document.getElementById('serviceTypeInput');
-    const unitSelect = document.getElementById('unitInput');
-    
-    if(serviceSelect && unitSelect) {
-        serviceSelect.addEventListener('change', function() {
-            const val = this.value;
-            const selectedOption = this.options[this.selectedIndex];
-            const unit = selectedOption.dataset.unit || defaultUnits[val] || 'm²';
-            unitSelect.value = unit;
-        });
-    }
 
     // --- PERSISTÊNCIA ---
     function savePreferences() {
@@ -1331,8 +1399,15 @@
         const customRateInput = document.getElementById('customRateInput');
         const unitInput = document.getElementById('unitInput'); 
         
+        // Coleta de Dados do Drywall
         const sheetSizeRadio = document.querySelector('input[name="sheetSize"]:checked');
         const sheetSize = sheetSizeRadio ? sheetSizeRadio.value : '240';
+        
+        const insulationInput = document.getElementById('insulationInput');
+        const insulation = insulationInput ? insulationInput.value : 'none';
+
+        const regulatorRadio = document.querySelector('input[name="regulatorType"]:checked');
+        const regulator = regulatorRadio ? regulatorRadio.value : 'normal';
         
         const type = typeSelect.value;
         const text = typeSelect.options[typeSelect.selectedIndex].text;
@@ -1351,6 +1426,8 @@
             area, 
             unit, 
             sheetSize: sheetSize,
+            insulation: insulation, // Add insulation info
+            regulator: regulator, // Add regulator type
             isCustom: false, 
             customRate: hasCustomRate ? customRate : null 
         });
@@ -1392,6 +1469,10 @@
             document.getElementById('customRateInput').value = item.customRate || '';
             document.getElementById('unitInput').value = item.unit || 'm²'; 
             document.getElementById('areaInput').focus();
+            
+            // Trigger change to show drywall options if needed
+            const event = new Event('change');
+            select.dispatchEvent(event);
         }
         removerServico(id);
     }
@@ -1453,7 +1534,7 @@
 
         services.forEach(s => {
             if(!s.isCustom) {
-                const wetKeywords = ['Plaquinha', 'Aramado', 'Beiral', 'Gesso 3D', 'Moldura', 'Gesso', 'Boiserie', 'Rodateto'];
+                const wetKeywords = ['Plaquinha', 'Aramado', 'Beiral', 'Gesso 3D', 'Moldura', 'Gesso', 'Boiserie', 'Rodateto', 'Parede de Bloco'];
                 const isWet = wetKeywords.some(keyword => s.typeText.includes(keyword) || s.type.includes(keyword));
                 if(isWet) plaquinhaArea += s.area; else drywallArea += s.area;
             }
@@ -1461,7 +1542,12 @@
             if (!s.isCustom) {
                 let recipeKey = sortedRecipeKeys.find(key => s.type.includes(key));
                 if (recipeKey) {
-                    const materials = MATERIAL_RECIPES[recipeKey](s.area, s.sheetSize);
+                    const options = {
+                        sheetSize: s.sheetSize,
+                        insulation: s.insulation,
+                        regulator: s.regulator
+                    };
+                    const materials = MATERIAL_RECIPES[recipeKey](s.area, options);
                     materials.forEach(mat => {
                         if (!materialAggregator[mat.name]) {
                             materialAggregator[mat.name] = { qtd: 0, unit: mat.unit };
@@ -1543,6 +1629,7 @@
                 let finalText = s.typeText;
                 if(s.type.includes('Drywall')) {
                      finalText += s.sheetSize === '180' ? ' [Chapa 1.80m]' : '';
+                     if(s.insulation && s.insulation !== 'none') finalText += ` [c/ ${s.insulation}]`;
                 }
 
                 return { ...s, typeText: finalText, estimatedValue: val };
@@ -1632,6 +1719,9 @@
         document.getElementById('pdfId').innerText = Math.floor(Math.random() * 9000) + 1000;
         const companyName = calculationResult.companyName;
         
+        // CHECK TOGGLE STATE
+        const showMeasurements = document.getElementById('pdfShowMeasurements').checked;
+
         // READ CURRENT PREFS FOR LOGO (to ensure latest logo is used)
         const prefs = JSON.parse(localStorage.getItem('gessoMasterPrefs') || '{}');
         const logoBase64 = prefs.companyLogo;
@@ -1670,33 +1760,54 @@
         const defaultSummary = "Este orçamento inclui fornecimento de material e mão de obra especializada.";
         document.getElementById('pdfProjectSummary').innerText = customSummary || defaultSummary;
 
+        // REGENERATE TABLE HEADER BASED ON TOGGLE
+        const theadRow = document.querySelector('#pdf-template thead tr');
+        if(theadRow) {
+            theadRow.innerHTML = `
+                <th style="padding: 12px 15px; text-align: left; border-radius: 6px 0 0 6px;">Descrição do Serviço</th>
+                ${showMeasurements ? '<th style="padding: 12px 15px; text-align: center;">Qtd/Medida</th>' : ''}
+                <th style="padding: 12px 15px; text-align: right; border-radius: 0 6px 6px 0;">Valor Estimado</th>
+            `;
+        }
+
         calculationResult.servicesDetail.forEach((s) => {
-            // Ajuste no PDF para mostrar unidade
             const areaDisplay = s.isCustom ? '-' : `${s.area} ${s.unit || 'm²'}`;
-            tbody.innerHTML += `<tr style="border-bottom: 1px solid #e5e7eb; page-break-inside: avoid;"><td style="padding: 12px 15px; color: #374151;">${s.typeText || s.type}</td><td style="padding: 12px 15px; text-align: center; color: #6b7280;">${areaDisplay}</td><td style="padding: 12px 15px; text-align: right; color: #111827; font-weight: 500;">${formatMoney(s.estimatedValue)}</td></tr>`;
+            // Conditionally render middle cell
+            const measurementCell = showMeasurements 
+                ? `<td style="padding: 12px 15px; text-align: center; color: #6b7280;">${areaDisplay}</td>` 
+                : '';
+
+            tbody.innerHTML += `
+                <tr style="border-bottom: 1px solid #e5e7eb; page-break-inside: avoid;">
+                    <td style="padding: 12px 15px; color: #374151;">${s.typeText || s.type}</td>
+                    ${measurementCell}
+                    <td style="padding: 12px 15px; text-align: right; color: #111827; font-weight: 500;">${formatMoney(s.estimatedValue)}</td>
+                </tr>`;
         });
         
-        // FOOTER DINAMICO PARA DESCONTO
+        // FOOTER DINAMICO PARA DESCONTO E COLSPAN
+        const footerColSpan = showMeasurements ? 2 : 1;
+
         const tfoot = document.getElementById('pdfServicesTableFoot');
         if(calculationResult.discount > 0) {
             tfoot.innerHTML = `
                 <tr style="border-top: 2px solid #E2E8F0;">
-                    <td colspan="2" style="padding: 10px 15px; text-align: right; color: #64748B;">Subtotal:</td>
+                    <td colspan="${footerColSpan}" style="padding: 10px 15px; text-align: right; color: #64748B;">Subtotal:</td>
                     <td style="padding: 10px 15px; text-align: right; color: #64748B;">${formatMoney(calculationResult.grossPrice)}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="padding: 5px 15px; text-align: right; color: #F97316;">Desconto:</td>
+                    <td colspan="${footerColSpan}" style="padding: 5px 15px; text-align: right; color: #F97316;">Desconto:</td>
                     <td style="padding: 5px 15px; text-align: right; color: #F97316;">- ${formatMoney(calculationResult.discount)}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL:</td>
+                    <td colspan="${footerColSpan}" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL:</td>
                     <td style="padding: 15px; text-align: right; font-weight: 800; font-size: 20px; color: #0F172A;">${formatMoney(calculationResult.salePrice)}</td>
                 </tr>
             `;
         } else {
              tfoot.innerHTML = `
                 <tr style="border-top: 2px solid #E2E8F0;">
-                    <td colspan="2" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL DO SERVIÇO:</td>
+                    <td colspan="${footerColSpan}" style="padding: 15px; text-align: right; font-weight: bold; color: #334155;">TOTAL GERAL DO SERVIÇO:</td>
                     <td style="padding: 15px; text-align: right; font-weight: 800; font-size: 20px; color: #0F172A;">${formatMoney(calculationResult.salePrice)}</td>
                 </tr>
              `;
@@ -1728,7 +1839,7 @@
             // Ensure cleanup on error
             wrapper.style.zIndex = "-100"; 
             wrapper.style.visibility = "hidden"; 
-            wrapper.style.left = "-9999px";
+            wrapper.style.left = "-9999px"; 
         });
     }
     
